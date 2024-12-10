@@ -1,6 +1,3 @@
-[submodule "ps2sdk"]
-	path = external/ps2sdk
-	url = https://github.com/ThirteenAG/ps2sdk.git
 [submodule "external/ps2sdk"]
 	path = external/ps2sdk
 	url = https://github.com/ThirteenAG/ps2sdk.git
