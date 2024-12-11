@@ -150,8 +150,8 @@ typedef struct cl_enginefuncs_s
 	int	  (*pfnDrawCharacter)		(int x, int y, int number, int r, int g, int b);
 	int   (*pfnDrawConsoleString)	(int x, int y, char* string);
 	void  (*pfnDrawConsoleStringLen) (const char* string, int* length, int* height);
-	void  (*pfnCenterPrint) (const char* string);
 	void  (*pfnConsolePrint) (const char* string);
+	void  (*pfnCenterPrint) (const char* string);
 
 } cl_enginefunc_t;
 
