@@ -57,6 +57,10 @@ int __MsgFunc_GameMode(int player, const char *pszName, int iSize, void *pbuf )
 	return gHUD.MsgFunc_GameMode( player, pszName, iSize, pbuf );
 }
 
+int __MsgFunc_HudColor(int player, const char* pszName, int iSize, void* pbuf)
+{
+	return gHUD.MsgFunc_HudColor(player, pszName, iSize, pbuf);
+}
 
 // This is called every time the DLL is loaded
 void CHud :: Init( int player )
@@ -67,7 +71,7 @@ void CHud :: Init( int player )
 	HOOK_MESSAGE( InitHUD );
 	HOOK_MESSAGE( SetFOV );
 	HOOK_MESSAGE( Concuss );
-	//HOOK_MESSAGE( HudColor );
+	HOOK_MESSAGE( HudColor );
 
 	m_iLogo = 0;
 	m_iFOV = 0;

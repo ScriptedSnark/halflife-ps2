@@ -535,6 +535,8 @@ public:
 	int		m_Teamplay;
 	int		m_iRes;
 
+	int m_iHUDColor[3];
+
 	int m_iFontHeight;
 	int DrawHudNumber(int x, int y, int iFlags, int iNumber, int r, int g, int b );
 	int DrawHudString(int x, int y, int iMaxX, char *szString, int r, int g, int b );
@@ -597,6 +599,8 @@ public:
 	void /*_cdecl*/ MsgFunc_InitHUD( int player, const char *pszName, int iSize, void *pbuf );
 	int /*_cdecl*/ MsgFunc_SetFOV(int player, const char *pszName,  int iSize, void *pbuf);
 	int  /*_cdecl*/ MsgFunc_Concuss( int player, const char *pszName, int iSize, void *pbuf );
+	int  /*_cdecl*/ MsgFunc_HudColor( int player, const char* pszName, int iSize, void* pbuf );
+
 	// Screen information
 	SCREENINFO	m_scrinfo;
 

@@ -103,3 +103,14 @@ int CHud :: MsgFunc_Concuss( int player, const char *pszName, int iSize, void *p
 	return 1;
 }
 
+int CHud::MsgFunc_HudColor(int player, const char* pszName, int iSize, void* pbuf)
+{
+	BEGIN_READ(pbuf, iSize);
+
+	// TODO: use m_iHUDColor everywhere
+	m_iHUDColor[0] = READ_BYTE();
+	m_iHUDColor[1] = READ_BYTE();
+	m_iHUDColor[2] = READ_BYTE();
+
+	return 1;
+}
