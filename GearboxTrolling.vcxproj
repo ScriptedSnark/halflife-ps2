@@ -45,19 +45,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <NMakeBuildCommandLine>rebuild.bat</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>del /s *.o</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>rebuild.bat</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>rebuild.bat</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>del /s *.o</NMakeCleanCommandLine>
     <NMakeOutput>GearboxTrolling.elf</NMakeOutput>
     <NMakePreprocessorDefinitions>$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <NMakeIncludeSearchPath>./engine;./cl_dll;./dlls;</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>./engine;./cl_dll;./dlls;./ps2</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeBuildCommandLine>rebuild.bat</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>del /s *.o</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>rebuild.bat</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>rebuild.bat</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>del /s *.o</NMakeCleanCommandLine>
     <NMakeOutput>GearboxTrolling.elf</NMakeOutput>
     <NMakePreprocessorDefinitions>$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <NMakeIncludeSearchPath>./engine;./cl_dll;./dlls;</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>./engine;./cl_dll;./dlls;./ps2</NMakeIncludeSearchPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
