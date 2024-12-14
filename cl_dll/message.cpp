@@ -33,7 +33,7 @@ int CHudMessage::Init(int player)
 
 	gHUD.AddHudElem(this);
 
-	Reset();
+	Reset(player);
 
 	return 1;
 };
@@ -47,7 +47,7 @@ int CHudMessage::VidInit( int player )
 };
 
 
-void CHudMessage::Reset( void )
+void CHudMessage::Reset( int player )
 {
  	memset( m_pMessages, 0, sizeof( m_pMessages[0] ) * maxHUDMessages );
 	memset( m_startTime, 0, sizeof( m_startTime[0] ) * maxHUDMessages );

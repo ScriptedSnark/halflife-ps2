@@ -36,12 +36,12 @@ int CHudAmmoSecondary :: Init( int player )
 	for ( int i = 0; i < MAX_SEC_AMMO_VALUES; i++ )
 		m_iAmmoAmounts[i] = -1;  // -1 means don't draw this value
 
-	Reset();
+	Reset(player);
 
 	return 1;
 }
 
-void CHudAmmoSecondary :: Reset( void )
+void CHudAmmoSecondary :: Reset( int player )
 {
 	m_fFade = 0;
 }

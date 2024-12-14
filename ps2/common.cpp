@@ -11,7 +11,7 @@ typedef unsigned int size_t;
 
 void Q_memset(void* dest, int fill, size_t count)
 {
-	int             i;
+	unsigned int             i;
 
 	if ((((long)dest | count) & 3) == 0)
 	{
@@ -27,7 +27,7 @@ void Q_memset(void* dest, int fill, size_t count)
 
 void Q_memcpy(void* dest, void* src, size_t count)
 {
-	int             i;
+	unsigned int             i;
 
 	if ((((long)dest | (long)src | count) & 3) == 0)
 	{

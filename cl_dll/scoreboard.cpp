@@ -44,7 +44,7 @@ int CHudScoreboard :: Init( int player )
 	HOOK_MESSAGE( TeamScore );
 	HOOK_MESSAGE( TeamInfo );
 
-	InitHUDData();
+	InitHUDData(player);
 
 	return 1;
 }
@@ -57,7 +57,7 @@ int CHudScoreboard :: VidInit( int player )
 	return 1;
 }
 
-void CHudScoreboard :: InitHUDData( void )
+void CHudScoreboard :: InitHUDData( int player )
 {
 	memset( m_PlayerExtraInfo, 0, sizeof m_PlayerExtraInfo );
 	m_iLastKilledBy = 0;

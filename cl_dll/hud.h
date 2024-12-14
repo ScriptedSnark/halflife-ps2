@@ -27,7 +27,7 @@
 
 typedef struct rect_s
 {
-	int				left, right, top, bottom;
+	int				left = 0, right = 0, top = 0, bottom = 0;
 } wrect_t;
 
 #include <stdio.h>
@@ -72,7 +72,7 @@ public:
 	virtual int Draw(float flTime, int player) {return 0;}
 	virtual void Think(int player) {return;}
 	virtual void Reset(int player) {return;}
-	virtual void InitHUDData( void ) {}		// called every time a server is connected to
+	virtual void InitHUDData( int player ) {}		// called every time a server is connected to
 
 };
 
@@ -119,7 +119,7 @@ public:
 private:
 	float m_fFade;
 	RGBA  m_rgba;
-	WEAPON *m_pWeapon;
+	WEAPON *m_pWeapon = NULL;
 	int	m_HUD_bucket0;
 	int m_HUD_selection;
 
@@ -134,7 +134,7 @@ class CHudAmmoSecondary: public CHudBase
 public:
 	int Init( int player );
 	int VidInit( int player );
-	void Reset( void );
+	void Reset( int player );
 	int Draw(float flTime, int player);
 
 	int MsgFunc_SecAmmoVal( int player, const char *pszName, int iSize, void *pbuf );
@@ -199,7 +199,7 @@ public:
 	int Init( int player );
 	int VidInit( int player );
 	int Draw( float flTime, int player );
-	void Reset( void );
+	void Reset( int player );
 
 	int MsgFunc_MOTD( int player, const char *pszName, int iSize, void *pbuf );
 
@@ -220,7 +220,7 @@ public:
 	int Init( int player );
 	int VidInit( int player );
 	int Draw( float flTime, int player );
-	void Reset( void );
+	void Reset( int player );
 	void ParseStatusString( int line_num );
 
 	int MsgFunc_StatusText( int player, const char *pszName, int iSize, void *pbuf );
@@ -247,7 +247,7 @@ class CHudScoreboard: public CHudBase
 {
 public:
 	int Init( int player );
-	void InitHUDData( void );
+	void InitHUDData( int player );
 	int VidInit( int player );
 	int Draw( float flTime, int player );
 	int DrawPlayers( int xoffset, float listslot, int nameoffset = 0, char *team = NULL ); // returns the ypos where it finishes drawing
@@ -303,7 +303,7 @@ class CHudDeathNotice : public CHudBase
 {
 public:
 	int Init( int player );
-	void InitHUDData( void );
+	void InitHUDData( int player );
 	int VidInit( int player );
 	int Draw( float flTime, int player );
 	int MsgFunc_DeathMsg( int player, const char *pszName, int iSize, void *pbuf );
@@ -319,13 +319,13 @@ class CHudMenu : public CHudBase
 {
 public:
 	int Init( int player );
-	void InitHUDData( void );
+	void InitHUDData( int player );
 	int VidInit( int player );
-	void Reset( void );
+	void Reset( int player );
 	int Draw( float flTime, int player );
 	int MsgFunc_ShowMenu( int player, const char *pszName, int iSize, void *pbuf );
 
-	void SelectMenuItem( int menu_item );
+	void SelectMenuItem( int menu_item, int player );
 
 	int m_fMenuDisplayed;
 	int m_bitsValidSlots;
@@ -340,11 +340,11 @@ class CHudSayText : public CHudBase
 {
 public:
 	int Init( int player );
-	void InitHUDData( void );
+	void InitHUDData( int player );
 	int VidInit( int player );
 	int Draw( float flTime, int player );
 	int MsgFunc_SayText( int player, const char *pszName, int iSize, void *pbuf );
-	void SayTextPrint( const char *pszBuf, int iBufSize );
+	void SayTextPrint( const char *pszBuf, int iBufSize, int player );
 	void EnsureTextFitsInOneLineAndWrapIfHaveTo( int line );
 };
 
@@ -453,7 +453,7 @@ public:
 	void MessageDrawScan( client_textmessage_t *pMessage, float time );
 	void MessageScanStart( void );
 	void MessageScanNextChar( void );
-	void Reset( void );
+	void Reset( int player );
 
 private:
 	client_textmessage_t		*m_pMessages[maxHUDMessages];
@@ -476,7 +476,7 @@ class CHudStatusIcons: public CHudBase
 public:
 	int Init( int player );
 	int VidInit( int player );
-	void Reset( void );
+	void Reset( int player );
 	int Draw(float flTime, int player);
 	int MsgFunc_StatusIcon(int player, const char *pszName, int iSize, void *pbuf);
 
@@ -514,30 +514,30 @@ class CHud
 {
 private:
 	HUDLIST						*m_pHudList;
-	HSPRITE						m_hsprLogo;
-	int							m_iLogo;
+	HSPRITE						m_hsprLogo = 0;
+	int							m_iLogo = 0;
 	client_sprite_t				*m_pSpriteList;
-	int							m_iSpriteCount;
-	int							m_iSpriteCountAllRes;
-	float						m_flMouseSensitivity;
-	int							m_iConcussionEffect; 
+	int							m_iSpriteCount = 0;
+	int							m_iSpriteCountAllRes = 0;
+	float						m_flMouseSensitivity = 0.0f;
+	int							m_iConcussionEffect = 0; 
 
 public:
 
-	float m_flTime;	   // the current client time
-	float m_fOldTime;  // the time at which the HUD was last redrawn
-	double m_flTimeDelta; // the difference between flTime and fOldTime
-	Vector	m_vecOrigin;
-	Vector	m_vecAngles;
-	int		m_iKeyBits;
+	float m_flTime = 0.0f;	   // the current client time
+	float m_fOldTime = 0.0f;  // the time at which the HUD was last redrawn
+	double m_flTimeDelta = 0.0; // the difference between flTime and fOldTime
+	Vector	m_vecOrigin[2];
+	Vector	m_vecAngles[2];
+	int		m_iKeyBits[2];
 	int		m_iHideHUDDisplay;
-	int		m_iFOV;
-	int		m_Teamplay;
-	int		m_iRes;
+	int		m_iFOV = 0;
+	int		m_Teamplay = 0;
+	int		m_iRes = 0;
 
-	int m_iHUDColor[3];
+	int m_iHUDColor[3] = { 0,0,0 };
 
-	int m_iFontHeight;
+	int m_iFontHeight = 0;
 	int DrawHudNumber(int x, int y, int iFlags, int iNumber, int r, int g, int b );
 	int DrawHudString(int x, int y, int iMaxX, char *szString, int r, int g, int b );
 	int DrawHudStringReverse( int xpos, int ypos, int iMinX, char *szString, int r, int g, int b );
@@ -604,12 +604,12 @@ public:
 	// Screen information
 	SCREENINFO	m_scrinfo;
 
-	int	m_iWeaponBits;
+	int	m_iWeaponBits[2];
 	int	m_fPlayerDead;
 	int m_iIntermission;
 
 	// sprite indexes
-	int m_HUD_number_0;
+	int m_HUD_number_0 = 0;
 
 
 	void AddHudElem(CHudBase *p);

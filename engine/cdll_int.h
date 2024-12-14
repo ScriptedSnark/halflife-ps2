@@ -119,7 +119,7 @@ typedef struct cl_enginefuncs_s
 	// screen handlers
 	void	(*pfnFillRGBA)			( int x, int y, int width, int height, int r, int g, int b, int a);
 	int		(*pfnGetScreenInfo)		( SCREENINFO *pscrinfo);
-	void	(*pfnSetCrosshair)		( HSPRITE hspr, wrect_t rc, int r, int g, int b, int player);
+	void	(*pfnSetCrosshair)		( HSPRITE hspr, wrect_t* rc, int r, int g, int b, int player);
 
 	// cvar handlers
 	int		(*pfnRegisterVariable)  ( char *szName, char *szValue, int flags );
@@ -138,8 +138,8 @@ typedef struct cl_enginefuncs_s
 	void	(*pfnGetPlayerInfo)		(int ent_num, hud_player_info_t* pinfo, int player);
 
 	// sound handlers
-	void	(*pfnPlaySoundByName)	( char *szSound, float volume );
-	void	(*pfnPlaySoundByName2)	(char* szSound, float volume);
+	void	(*pfnPlaySoundByName)	( char *szSound, int player );
+	void	(*pfnPlayGlobalSoundByName)	(char* szSound, float volume);
 	void	(*pfnPlaySoundByIndex)	( int iSound, float volume );
 
 	// vector helpers

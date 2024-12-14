@@ -35,7 +35,7 @@ int CHudStatusBar :: Init( int player )
 	HOOK_MESSAGE( StatusText );
 	HOOK_MESSAGE( StatusValue );
 
-	Reset();
+	Reset(player);
 
 	if (player == 0)
 	{
@@ -52,7 +52,7 @@ int CHudStatusBar :: VidInit( int player )
 	return 1;
 }
 
-void CHudStatusBar :: Reset( void )
+void CHudStatusBar :: Reset( int player )
 {
 	m_iFlags &= ~HUD_ACTIVE;  // start out inactive
 	for ( int i = 0; i < MAX_STATUSBAR_LINES; i++ )

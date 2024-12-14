@@ -165,8 +165,8 @@ else
 EE_LINKFILE = linkfile
 endif
 
-EE_CFLAGS = $(INCLUDEDIRS) -fno-zero-initialized-in-bss -O0
-EE_CXXFLAGS = $(INCLUDEDIRS) -fno-use-cxa-atexit -fno-rtti -fno-exceptions -fno-zero-initialized-in-bss -O0
+EE_CFLAGS = $(INCLUDEDIRS) -Wno-comment -Wno-write-strings -fno-zero-initialized-in-bss -O0
+EE_CXXFLAGS = $(INCLUDEDIRS) -Wno-comment -Wno-reorder -Wno-write-strings -fno-use-cxa-atexit -fno-rtti -fno-exceptions -fno-zero-initialized-in-bss -O0
 
 EE_LDFLAGS = -Wl,--entry=init -Wl,-Map,$(EE_BIN_NAME).map -Wl,'--defsym=BASE_ADDRESS=$(BASE_ADDRESS)' 
 

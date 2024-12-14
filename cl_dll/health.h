@@ -104,7 +104,7 @@ public:
 	virtual int Init( int player );
 	virtual int VidInit( int player );
 	virtual int Draw(float fTime, int player);
-	virtual void Reset( void );
+	virtual void Reset( int player );
 	int MsgFunc_Health(int player, const char *pszName,  int iSize, void *pbuf);
 	int MsgFunc_Damage(int player, const char *pszName,  int iSize, void *pbuf);
 	int m_iHealth;
@@ -118,10 +118,10 @@ private:
 	DAMAGE_IMAGE m_dmg[NUM_DMG_TYPES];
 	int	m_bitsDamage;
 	float m_fFade;
-	void GetPainColor( int &r, int &g, int &b );
-	int DrawPain(float fTime);
-	int DrawDamage(float fTime);
+	void GetPainColor( int &r, int &g, int &b, int player );
+	int DrawPain(float fTime, int player);
+	int DrawDamage(float fTime, int player);
 	float m_fAttackFront, m_fAttackRear, m_fAttackLeft, m_fAttackRight;
-	void CalcDamageDirection(vec3_t vecFrom);
-	void UpdateTiles(float fTime, long bits);
+	void CalcDamageDirection(vec3_t vecFrom, int player);
+	void UpdateTiles(float fTime, long bits, int player);
 };	

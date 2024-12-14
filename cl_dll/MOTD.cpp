@@ -50,7 +50,7 @@ int CHudMOTD :: VidInit( int player )
 	return 1;
 }
 
-void CHudMOTD :: Reset( void )
+void CHudMOTD :: Reset( int player )
 {
 	m_iFlags &= ~HUD_ACTIVE;  // start out inactive
 	m_szMOTD[0] = 0;
@@ -114,7 +114,7 @@ int CHudMOTD :: MsgFunc_MOTD( int player, const char *pszName, int iSize, void *
 {
 	if ( m_iFlags & HUD_ACTIVE )
 	{
-		Reset(); // clear the current MOTD in prep for this one
+		Reset(player); // clear the current MOTD in prep for this one
 	}
 
 	BEGIN_READ( pbuf, iSize );

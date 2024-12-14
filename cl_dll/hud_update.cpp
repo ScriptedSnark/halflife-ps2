@@ -25,13 +25,13 @@
 
 int CHud::UpdateClientData(client_data_t *cdata, int player)
 {
-	Q_memcpy(m_vecOrigin, cdata->origin, sizeof(vec3_t));
-	Q_memcpy(m_vecAngles, cdata->viewangles, sizeof(vec3_t));
-	m_iKeyBits = cdata->iKeyBits;
-	m_iWeaponBits = cdata->iWeaponBits;
+	Q_memcpy(m_vecOrigin[player], cdata->origin, sizeof(vec3_t));
+	Q_memcpy(m_vecAngles[player], cdata->viewangles, sizeof(vec3_t));
+	m_iKeyBits[player] = cdata->iKeyBits;
+	m_iWeaponBits[player] = cdata->iWeaponBits;
 	gHUD.Think(player);
 
-	cdata->iKeyBits = m_iKeyBits;
+	cdata->iKeyBits = m_iKeyBits[player];
 	cdata->fov = m_iFOV;
 	cdata->view_idlescale = m_iConcussionEffect;
 

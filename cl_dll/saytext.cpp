@@ -44,7 +44,7 @@ int CHudSayText :: Init( int player )
 
 	HOOK_MESSAGE( SayText );
 
-	InitHUDData();
+	InitHUDData(player);
 
 	if (player == 0)
 	{
@@ -55,7 +55,7 @@ int CHudSayText :: Init( int player )
 }
 
 
-void CHudSayText :: InitHUDData( void )
+void CHudSayText :: InitHUDData( int player )
 {
 	memset( g_szLineBuffer, 0, sizeof g_szLineBuffer );
 }
@@ -119,12 +119,12 @@ int CHudSayText :: MsgFunc_SayText( int player, const char *pszName, int iSize, 
 	BEGIN_READ( pbuf, iSize );
 
 	int client_index = READ_BYTE();		// the client who spoke the message
-	SayTextPrint( READ_STRING(), iSize - 1 );
+	SayTextPrint( READ_STRING(), iSize - 1, player );
 	
 	return 1;
 }
 
-void CHudSayText :: SayTextPrint( const char *pszBuf, int iBufSize )
+void CHudSayText :: SayTextPrint( const char *pszBuf, int iBufSize, int player )
 {
 	// find an empty string slot
 	int i = 0;
@@ -154,7 +154,7 @@ void CHudSayText :: SayTextPrint( const char *pszBuf, int iBufSize )
 	}
 
 	m_iFlags |= HUD_ACTIVE;
-	PlaySound( "misc/talk.wav", 1 );
+	PlaySound( "misc/talk.wav", player );
 
 	if ( ScreenHeight >= 480 )
 		Y_START = ScreenHeight - 45;

@@ -33,19 +33,19 @@ int CHudMenu :: Init( int player )
 
 	HOOK_MESSAGE( ShowMenu );
 
-	InitHUDData();
+	InitHUDData(player);
 
 	return 1;
 }
 
-void CHudMenu :: InitHUDData( void )
+void CHudMenu :: InitHUDData( int player )
 {
 	m_fMenuDisplayed = 0;
 	m_bitsValidSlots = 0;
-	Reset();
+	Reset(player);
 }
 
-void CHudMenu :: Reset( void )
+void CHudMenu :: Reset( int player )
 {
 	g_szPrelocalisedMenuString[0] = 0;
 	m_fWaitingForMore = FALSE;
@@ -103,7 +103,7 @@ int CHudMenu :: Draw( float flTime, int player )
 }
 
 // selects an item from the menu
-void CHudMenu :: SelectMenuItem( int menu_item )
+void CHudMenu :: SelectMenuItem( int menu_item, int player )
 {
 	// if menu_item is in a valid slot,  send a menuselect command to the server
 	if ( (menu_item > 0) && (m_bitsValidSlots & (1 << (menu_item-1))) )

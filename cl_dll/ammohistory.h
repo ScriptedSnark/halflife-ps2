@@ -23,73 +23,73 @@ class WeaponsResource
 {
 private:
 	// Information about weapons & ammo
-	WEAPON		rgWeapons[MAX_WEAPONS];	// Weapons Array
+	WEAPON		rgWeapons[MAX_WEAPONS][2];	// Weapons Array
 
 	// counts of weapons * ammo
-	WEAPON*		rgSlots[MAX_WEAPON_SLOTS+1][MAX_WEAPON_POSITIONS+1];	// The slots currently in use by weapons.  The value is a pointer to the weapon;  if it's NULL, no weapon is there
-	int			riAmmo[MAX_AMMO_TYPES];							// count of each ammo type
+	WEAPON*		rgSlots[MAX_WEAPON_SLOTS+1][MAX_WEAPON_POSITIONS+1][2];	// The slots currently in use by weapons.  The value is a pointer to the weapon;  if it's NULL, no weapon is there
+	int			riAmmo[MAX_AMMO_TYPES][2];							// count of each ammo type
 
 public:
-	void Init( void )
+	void Init( int player )
 	{
-		Q_memset( rgWeapons, 0, sizeof rgWeapons );
-		Reset();
+		memset( rgWeapons, 0, sizeof rgWeapons);
+		Reset(player);
 	}
 
-	void Reset( void )
+	void Reset(int player)
 	{
-		iOldWeaponBits = 0;
-		Q_memset( rgSlots, 0, sizeof rgSlots );
-		Q_memset( riAmmo, 0, sizeof riAmmo );
+		iOldWeaponBits[player] = 0;
+		memset( rgSlots, 0, sizeof rgSlots );
+		memset( riAmmo, 0, sizeof riAmmo );
 	}
 
 ///// WEAPON /////
-	int			iOldWeaponBits;
+	int			iOldWeaponBits[2];
 
-	WEAPON *GetWeapon( int iId ) { return &rgWeapons[iId]; }
-	void AddWeapon( WEAPON *wp ) 
+	WEAPON *GetWeapon( int iId, int player ) { return &rgWeapons[iId][player]; }
+	void AddWeapon( WEAPON *wp, int player)
 	{ 
-		rgWeapons[ wp->iId ] = *wp;	
-		LoadWeaponSprites( &rgWeapons[ wp->iId ] );
+		rgWeapons[ wp->iId ][player] = *wp;
+		LoadWeaponSprites( &rgWeapons[ wp->iId ][player]);
 	}
 
-	void PickupWeapon( WEAPON *wp )
+	void PickupWeapon( WEAPON *wp, int player)
 	{
-		rgSlots[ wp->iSlot ][ wp->iSlotPos ] = wp;
+		rgSlots[ wp->iSlot ][ wp->iSlotPos ][ player ] = wp;
 	}
 
-	void DropWeapon( WEAPON *wp )
+	void DropWeapon( WEAPON *wp, int player)
 	{
-		rgSlots[ wp->iSlot ][ wp->iSlotPos ] = NULL;
+		rgSlots[ wp->iSlot ][ wp->iSlotPos ][ player ] = NULL;
 	}
 
-	void DropAllWeapons( void )
+	void DropAllWeapons(int player)
 	{
 		for ( int i = 0; i < MAX_WEAPONS; i++ )
 		{
-			if ( rgWeapons[i].iId )
-				DropWeapon( &rgWeapons[i] );
+			if ( rgWeapons[i][player].iId)
+				DropWeapon( &rgWeapons[i][player], player);
 		}
 	}
 
-	WEAPON* GetWeaponSlot( int slot, int pos ) { return rgSlots[slot][pos]; }
+	WEAPON* GetWeaponSlot( int slot, int pos, int player) { return rgSlots[slot][pos][player]; }
 
 	void LoadWeaponSprites( WEAPON* wp );
-	void LoadAllWeaponSprites( void );
-	WEAPON* GetFirstPos( int iSlot );
+	void LoadAllWeaponSprites( int player );
+	WEAPON* GetFirstPos( int iSlot, int player );
 	void SelectSlot( int iSlot, int fAdvance, int iDirection, int player );
-	WEAPON* GetNextActivePos( int iSlot, int iSlotPos );
+	WEAPON* GetNextActivePos( int iSlot, int iSlotPos, int player);
 
-	int HasAmmo( WEAPON *p );
+	int HasAmmo( WEAPON *p, int player );
 
 ///// AMMO /////
 	AMMO GetAmmo( int iId ) { return iId; }
 
-	void SetAmmo( int iId, int iCount ) { riAmmo[ iId ] = iCount;	}
+	void SetAmmo( int iId, int iCount, int player) { riAmmo[ iId ][ player ] = iCount; }
 
-	int CountAmmo( int iId );
+	int CountAmmo( int iId, int player);
 
-	HSPRITE* GetAmmoPicFromWeapon( int iAmmoId, wrect_t& rect );
+	HSPRITE* GetAmmoPicFromWeapon( int iAmmoId, wrect_t& rect, int player );
 
 };
 
@@ -114,28 +114,28 @@ private:
 		int iId;
 	};
 
-	HIST_ITEM rgAmmoHistory[MAX_HISTORY];
+	HIST_ITEM rgAmmoHistory[MAX_HISTORY][2];
 
 public:
 
-	void Init( void )
+	void Init( int player )
 	{
-		Reset();
+		Reset(player);
 	}
 
-	void Reset( void )
+	void Reset( int player )
 	{
-		memset( rgAmmoHistory, 0, sizeof rgAmmoHistory );
+		memset( rgAmmoHistory, 0, sizeof rgAmmoHistory);
 	}
 
 	int iHistoryGap;
 	int iCurrentHistorySlot;
 
-	void AddToHistory( int iType, int iId, int iCount = 0 );
-	void AddToHistory( int iType, const char *szName, int iCount = 0 );
+	void AddToHistory( int iType, int iId, int iCount, int player );
+	void AddToHistory( int iType, const char *szName, int iCount, int player );
 
-	void CheckClearHistory( void );
-	int DrawAmmoHistory( float flTime );
+	void CheckClearHistory( int player );
+	int DrawAmmoHistory( float flTime, int player );
 };
 
 extern HistoryResource gHR;

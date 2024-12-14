@@ -71,7 +71,7 @@ int CHudHealth::Init(int player)
 	return 1;
 }
 
-void CHudHealth::Reset( void )
+void CHudHealth::Reset( int player )
 {
 	// make sure the pain compass is cleared when the player respawns
 	m_fAttackFront = m_fAttackRear = m_fAttackRight = m_fAttackLeft = 0;
@@ -129,11 +129,11 @@ int CHudHealth:: MsgFunc_Damage(int player, const char *pszName,  int iSize, voi
 	for ( int i = 0 ; i < 3 ; i++)
 		vecFrom[i] = READ_COORD();
 
-	UpdateTiles(gHUD.m_flTime, bitsDamage);
+	UpdateTiles(gHUD.m_flTime, bitsDamage, player);
 
 	// Actually took damage?
 	if ( damageTaken > 0 || armor > 0 )
-		CalcDamageDirection(vecFrom);
+		CalcDamageDirection(vecFrom, player);
 
 	return 1;
 }
@@ -141,7 +141,7 @@ int CHudHealth:: MsgFunc_Damage(int player, const char *pszName,  int iSize, voi
 
 // Returns back a color from the
 // Green <-> Yellow <-> Red ramp
-void CHudHealth::GetPainColor( int &r, int &g, int &b )
+void CHudHealth::GetPainColor( int &r, int &g, int &b, int player )
 {
 	int iHealth = m_iHealth;
 
@@ -204,11 +204,11 @@ int CHudHealth::Draw(float flTime, int player)
 	if (m_iHealth <= 15)
 		a = 255;
 		
-	GetPainColor( r, g, b );
+	GetPainColor( r, g, b, player );
 	ScaleColors(r, g, b, a );
 
 	// Only draw health if we have the suit.
-	if (gHUD.m_iWeaponBits & (1<<(WEAPON_SUIT)))
+	if (gHUD.m_iWeaponBits[player] & (1 << (WEAPON_SUIT)))
 	{
 		HealthWidth = gHUD.GetSpriteRect(gHUD.m_HUD_number_0).right - gHUD.GetSpriteRect(gHUD.m_HUD_number_0).left;
 		int CrossWidth = gHUD.GetSpriteRect(m_HUD_cross).right - gHUD.GetSpriteRect(m_HUD_cross).left;
@@ -230,11 +230,11 @@ int CHudHealth::Draw(float flTime, int player)
 		FillRGBA(x, y, iWidth, iHeight, 255, 160, 0, a);
 	}
 
-	DrawDamage(flTime);
-	return DrawPain(flTime);
+	DrawDamage(flTime, player);
+	return DrawPain(flTime, player);
 }
 
-void CHudHealth::CalcDamageDirection(vec3_t vecFrom)
+void CHudHealth::CalcDamageDirection(vec3_t vecFrom, int player)
 {
 	vec3_t	forward, right, up;
 	float	side, front;
@@ -247,8 +247,8 @@ void CHudHealth::CalcDamageDirection(vec3_t vecFrom)
 	}
 
 
-	Q_memcpy(vecOrigin, gHUD.m_vecOrigin, sizeof(vec3_t));
-	Q_memcpy(vecAngles, gHUD.m_vecAngles, sizeof(vec3_t));
+	Q_memcpy(vecOrigin, gHUD.m_vecOrigin[player], sizeof(vec3_t));
+	Q_memcpy(vecAngles, gHUD.m_vecAngles[player], sizeof(vec3_t));
 
 
 	VectorSubtract (vecFrom, vecOrigin, vecFrom);
@@ -293,7 +293,7 @@ void CHudHealth::CalcDamageDirection(vec3_t vecFrom)
 	}
 }
 
-int CHudHealth::DrawPain(float flTime)
+int CHudHealth::DrawPain(float flTime, int player)
 {
 	if (!(m_fAttackFront || m_fAttackRear || m_fAttackLeft || m_fAttackRight))
 		return 1;
@@ -309,7 +309,7 @@ int CHudHealth::DrawPain(float flTime)
 	// SPR_Draw top
 	if (m_fAttackFront > 0.4)
 	{
-		GetPainColor(r,g,b);
+		GetPainColor(r,g,b,player);
 		shade = a * max( m_fAttackFront, 0.5 );
 		ScaleColors(r, g, b, shade);
 		SPR_Set(m_hSprite, r, g, b );
@@ -323,7 +323,7 @@ int CHudHealth::DrawPain(float flTime)
 
 	if (m_fAttackRight > 0.4)
 	{
-		GetPainColor(r,g,b);
+		GetPainColor(r,g,b,player);
 		shade = a * max( m_fAttackRight, 0.5 );
 		ScaleColors(r, g, b, shade);
 		SPR_Set(m_hSprite, r, g, b );
@@ -337,7 +337,7 @@ int CHudHealth::DrawPain(float flTime)
 
 	if (m_fAttackRear > 0.4)
 	{
-		GetPainColor(r,g,b);
+		GetPainColor(r,g,b,player);
 		shade = a * max( m_fAttackRear, 0.5 );
 		ScaleColors(r, g, b, shade);
 		SPR_Set(m_hSprite, r, g, b );
@@ -351,7 +351,7 @@ int CHudHealth::DrawPain(float flTime)
 
 	if (m_fAttackLeft > 0.4)
 	{
-		GetPainColor(r,g,b);
+		GetPainColor(r,g,b,player);
 		shade = a * max( m_fAttackLeft, 0.5 );
 		ScaleColors(r, g, b, shade);
 		SPR_Set(m_hSprite, r, g, b );
@@ -367,7 +367,7 @@ int CHudHealth::DrawPain(float flTime)
 	return 1;
 }
 
-int CHudHealth::DrawDamage(float flTime)
+int CHudHealth::DrawDamage(float flTime, int player)
 {
 	int r, g, b, a;
 	DAMAGE_IMAGE *pdmg;
@@ -429,7 +429,7 @@ int CHudHealth::DrawDamage(float flTime)
 }
  
 
-void CHudHealth::UpdateTiles(float flTime, long bitsDamage)
+void CHudHealth::UpdateTiles(float flTime, long bitsDamage, int player)
 {	
 	DAMAGE_IMAGE *pdmg;
 

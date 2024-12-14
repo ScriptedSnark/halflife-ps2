@@ -192,7 +192,7 @@ int CHudTextMessage::MsgFunc_TextMsg( int player, const char *pszName, int iSize
 
 	case HUD_PRINTTALK:
 		Sys_sprintf( psz, msg_text, sstr1, sstr2, sstr3, sstr4 );
-		gHUD.m_SayText.SayTextPrint( ConvertCRtoNL( psz ), 128 );
+		gHUD.m_SayText.SayTextPrint( ConvertCRtoNL( psz ), 128, player );
 		break;
 
 	case HUD_PRINTCONSOLE:

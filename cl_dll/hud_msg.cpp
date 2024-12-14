@@ -53,7 +53,7 @@ void CHud :: MsgFunc_InitHUD( int player, const char *pszName, int iSize, void *
 	while (pList)
 	{
 		if ( pList->p )
-			pList->p->InitHUDData();
+			pList->p->InitHUDData(player);
 		pList = pList->pNext;
 	}
 }

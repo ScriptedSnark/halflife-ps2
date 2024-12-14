@@ -40,18 +40,18 @@ struct ITEM_INFO
 	wrect_t rect;
 };
 
-void HistoryResource :: AddToHistory( int iType, int iId, int iCount )
+void HistoryResource :: AddToHistory( int iType, int iId, int iCount, int player )
 {
 	if ( iType == HISTSLOT_AMMO && !iCount )
 		return;  // no amount, so don't add
 
-	if ( (((AMMO_PICKUP_GAP * iCurrentHistorySlot) + AMMO_PICKUP_PICK_HEIGHT) > AMMO_PICKUP_HEIGHT_MAX) || (iCurrentHistorySlot >= MAX_HISTORY) )
+	if ( (((AMMO_PICKUP_GAP * iCurrentHistorySlot) + AMMO_PICKUP_PICK_HEIGHT) > AMMO_PICKUP_HEIGHT_MAX) || (iCurrentHistorySlot >= MAX_HISTORY))
 	{	// the pic would have to be drawn too high
 		// so start from the bottom
 		iCurrentHistorySlot = 0;
 	}
 	
-	HIST_ITEM *freeslot = &rgAmmoHistory[iCurrentHistorySlot++];  // default to just writing to the first slot
+	HIST_ITEM *freeslot = &rgAmmoHistory[iCurrentHistorySlot++][player];  // default to just writing to the first slot
 	HISTORY_DRAW_TIME = CVAR_GET_FLOAT( "hud_drawhistory_time" );
 
 	freeslot->type = iType;
@@ -60,7 +60,7 @@ void HistoryResource :: AddToHistory( int iType, int iId, int iCount )
 	freeslot->DisplayTime = gHUD.m_flTime + HISTORY_DRAW_TIME;
 }
 
-void HistoryResource :: AddToHistory( int iType, const char *szName, int iCount )
+void HistoryResource :: AddToHistory( int iType, const char *szName, int iCount, int player)
 {
 	if ( iType != HISTSLOT_ITEM )
 		return;
@@ -71,7 +71,7 @@ void HistoryResource :: AddToHistory( int iType, const char *szName, int iCount 
 		iCurrentHistorySlot = 0;
 	}
 
-	HIST_ITEM *freeslot = &rgAmmoHistory[iCurrentHistorySlot++];  // default to just writing to the first slot
+	HIST_ITEM *freeslot = &rgAmmoHistory[iCurrentHistorySlot++][player];  // default to just writing to the first slot
 
 	// I am really unhappy with all the code in this file
 
@@ -88,11 +88,11 @@ void HistoryResource :: AddToHistory( int iType, const char *szName, int iCount 
 }
 
 
-void HistoryResource :: CheckClearHistory( void )
+void HistoryResource :: CheckClearHistory(int player)
 {
 	for ( int i = 0; i < MAX_HISTORY; i++ )
 	{
-		if ( rgAmmoHistory[i].type )
+		if ( rgAmmoHistory[i][player].type)
 			return;
 	}
 
@@ -102,27 +102,27 @@ void HistoryResource :: CheckClearHistory( void )
 //
 // Draw Ammo pickup history
 //
-int HistoryResource :: DrawAmmoHistory( float flTime )
+int HistoryResource :: DrawAmmoHistory( float flTime, int player )
 {
 	for ( int i = 0; i < MAX_HISTORY; i++ )
 	{
-		if ( rgAmmoHistory[i].type )
+		if ( rgAmmoHistory[i][player].type)
 		{
-			rgAmmoHistory[i].DisplayTime = min( rgAmmoHistory[i].DisplayTime, gHUD.m_flTime + HISTORY_DRAW_TIME );
+			rgAmmoHistory[i][player].DisplayTime = min(rgAmmoHistory[i][player].DisplayTime, gHUD.m_flTime + HISTORY_DRAW_TIME);
 
-			if ( rgAmmoHistory[i].DisplayTime <= flTime )
+			if ( rgAmmoHistory[i][player].DisplayTime <= flTime)
 			{  // pic drawing time has expired
-				memset( &rgAmmoHistory[i], 0, sizeof(HIST_ITEM) );
-				CheckClearHistory();
+				memset( &rgAmmoHistory[i][player], 0, sizeof(HIST_ITEM));
+				CheckClearHistory(player);
 			}
-			else if ( rgAmmoHistory[i].type == HISTSLOT_AMMO )
+			else if ( rgAmmoHistory[i][player].type == HISTSLOT_AMMO)
 			{
 				wrect_t rcPic;
-				HSPRITE *spr = gWR.GetAmmoPicFromWeapon( rgAmmoHistory[i].iId, rcPic );
+				HSPRITE *spr = gWR.GetAmmoPicFromWeapon( rgAmmoHistory[i][player].iId, rcPic, player);
 
 				int r, g, b;
 				UnpackRGB(r,g,b, RGB_YELLOWISH);
-				float scale = (rgAmmoHistory[i].DisplayTime - flTime) * 80;
+				float scale = (rgAmmoHistory[i][player].DisplayTime - flTime) * 80;
 				ScaleColors(r, g, b, min(scale, 255) );
 
 				// Draw the pic
@@ -135,11 +135,11 @@ int HistoryResource :: DrawAmmoHistory( float flTime )
 				}
 
 				// Draw the number
-				gHUD.DrawHudNumberString( xpos - 10, ypos, xpos - 100, rgAmmoHistory[i].iCount, r, g, b );
+				gHUD.DrawHudNumberString( xpos - 10, ypos, xpos - 100, rgAmmoHistory[i][player].iCount, r, g, b );
 			}
-			else if ( rgAmmoHistory[i].type == HISTSLOT_WEAP )
+			else if ( rgAmmoHistory[i][player].type == HISTSLOT_WEAP)
 			{
-				WEAPON *weap = gWR.GetWeapon( rgAmmoHistory[i].iId );
+				WEAPON *weap = gWR.GetWeapon( rgAmmoHistory[i][player].iId, player);
 
 				if ( !weap )
 					return 1;  // we don't know about the weapon yet, so don't draw anything
@@ -147,10 +147,10 @@ int HistoryResource :: DrawAmmoHistory( float flTime )
 				int r, g, b;
 				UnpackRGB(r,g,b, RGB_YELLOWISH);
 
-				if ( !gWR.HasAmmo( weap ) )
+				if ( !gWR.HasAmmo( weap, player ) )
 					UnpackRGB(r,g,b, RGB_REDISH);	// if the weapon doesn't have ammo, display it as red
 
-				float scale = (rgAmmoHistory[i].DisplayTime - flTime) * 80;
+				float scale = (rgAmmoHistory[i][player].DisplayTime - flTime) * 80;
 				ScaleColors(r, g, b, min(scale, 255) );
 
 				int ypos = ScreenHeight - (AMMO_PICKUP_PICK_HEIGHT + (AMMO_PICKUP_GAP * i));
@@ -158,23 +158,23 @@ int HistoryResource :: DrawAmmoHistory( float flTime )
 				SPR_Set( weap->hInactive, r, g, b );
 				SPR_DrawAdditive( 0, xpos, ypos, &weap->rcInactive );
 			}
-			else if ( rgAmmoHistory[i].type == HISTSLOT_ITEM )
+			else if ( rgAmmoHistory[i][player].type == HISTSLOT_ITEM )
 			{
 				int r, g, b;
 
-				if ( !rgAmmoHistory[i].iId )
+				if ( !rgAmmoHistory[i][player].iId )
 					continue;  // sprite not loaded
 
-				wrect_t rect = gHUD.GetSpriteRect( rgAmmoHistory[i].iId );
+				wrect_t rect = gHUD.GetSpriteRect( rgAmmoHistory[i][player].iId );
 
 				UnpackRGB(r,g,b, RGB_YELLOWISH);
-				float scale = (rgAmmoHistory[i].DisplayTime - flTime) * 80;
+				float scale = (rgAmmoHistory[i][player].DisplayTime - flTime) * 80;
 				ScaleColors(r, g, b, min(scale, 255) );
 
 				int ypos = ScreenHeight - (AMMO_PICKUP_PICK_HEIGHT + (AMMO_PICKUP_GAP * i));
 				int xpos = ScreenWidth - (rect.right - rect.left) - 10;
 
-				SPR_Set( gHUD.GetSprite( rgAmmoHistory[i].iId ), r, g, b );
+				SPR_Set( gHUD.GetSprite( rgAmmoHistory[i][player].iId ), r, g, b );
 				SPR_DrawAdditive( 0, xpos, ypos, &rect );
 			}
 		}

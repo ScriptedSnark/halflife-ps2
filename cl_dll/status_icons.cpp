@@ -27,7 +27,7 @@ int CHudStatusIcons::Init( int player )
 
 	gHUD.AddHudElem( this );
 
-	Reset();
+	Reset(player);
 
 	return 1;
 }
@@ -38,7 +38,7 @@ int CHudStatusIcons::VidInit( int player )
 	return 1;
 }
 
-void CHudStatusIcons::Reset( void )
+void CHudStatusIcons::Reset( int player )
 {
 	memset( m_IconList, 0, sizeof m_IconList );
 	m_iFlags &= ~HUD_ACTIVE;

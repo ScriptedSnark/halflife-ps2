@@ -112,7 +112,7 @@ inline void CenterPrint( const char *string )
 #define GetPlayerInfo (*gEngfuncs.pfnGetPlayerInfo)
 
 // sound functions
-inline void PlaySound( char *szSound, float vol ) { gEngfuncs.pfnPlaySoundByName( szSound, vol ); }
+inline void PlaySound( char *szSound, int player ) { gEngfuncs.pfnPlaySoundByName(szSound, player); }
 inline void PlaySound( int iSound, float vol ) { gEngfuncs.pfnPlaySoundByIndex( iSound, vol ); }
 
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
@@ -125,11 +125,6 @@ void ScaleColors( int &r, int &g, int &b, int a );
 #define VectorSubtract(a,b,c) {(c)[0]=(a)[0]-(b)[0];(c)[1]=(a)[1]-(b)[1];(c)[2]=(a)[2]-(b)[2];}
 #define VectorAdd(a,b,c) {(c)[0]=(a)[0]+(b)[0];(c)[1]=(a)[1]+(b)[1];(c)[2]=(a)[2]+(b)[2];}
 #define VectorCopy(a,b) {(b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2];}
-
-// disable 'possible loss of data converting float to int' warning message
-#pragma warning( disable: 4244 )
-// disable 'truncation from 'const double' to 'float' warning message
-#pragma warning( disable: 4305 )
 
 inline void UnpackRGB(int &r, int &g, int &b, unsigned long ulRGB)\
 {\

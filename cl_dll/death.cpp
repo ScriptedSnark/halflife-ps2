@@ -52,7 +52,7 @@ int CHudDeathNotice :: Init( int player )
 }
 
 
-void CHudDeathNotice :: InitHUDData( void )
+void CHudDeathNotice :: InitHUDData( int player )
 {
 	memset( rgDeathNoticeList, 0, sizeof(rgDeathNoticeList) );
 }
